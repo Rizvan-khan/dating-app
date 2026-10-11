@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\UserResource\Pages;
+use App\Models\User;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+
+class UserResource extends Resource
+{
+    protected static ?string $model = User::class;
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    public static function form(Form $form): Form
+    {
+        return $form->schema([
+            Toggle::make('is_verified')->label('Verified badge'),
+            Toggle::make('is_banned')->label('Banned'),
+        ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table->columns([
+            Tables\Columns\TextColumn::make('name')->searchable(),
+            Tables\Columns\TextColumn::make('phone')->searchable(),
+            Tables\Columns\BadgeColumn::make('gender'),
+            Tables\Columns\TextColumn::make('area')->sortable(),
+            Tables\Columns\IconColumn::make('is_verified')->boolean(),
+            Tables\Columns\TextColumn::make('credits')->sortable(),
+            Tables\Columns\IconColumn::make('is_banned')->boolean(),
+        ])->actions([Tables\Actions\EditAction::make()]);
+    }
+
+    public static function getPages(): array
+    {
+        return ['index' => Pages\ListUsers::route('/')];
+    }
+}
